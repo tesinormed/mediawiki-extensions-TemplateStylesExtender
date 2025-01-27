@@ -79,6 +79,7 @@ class StylePropertySanitizerExtender extends StylePropertySanitizer {
 		$this->cache[__METHOD__] = array_merge(
 			parent::getSizingAdditions( $matcherFactory ),
 			[
+				new KeywordMatcher( 'fit-content' ),
 				new FunctionMatcher( 'clamp', Quantifier::hash( new Alternative( [
 					$matcherFactory->length(),
 					$matcherFactory->lengthPercentage(),
