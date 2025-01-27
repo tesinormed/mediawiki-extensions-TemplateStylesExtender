@@ -34,11 +34,6 @@ use Wikimedia\CSS\Sanitizer\StylePropertySanitizer;
 
 class TemplateStylesExtender {
 	/**
-	 * @var Config
-	 */
-	private static $config;
-
-	/**
 	 * Adds a css wide keyword matcher for css variables
 	 * Matches 0-INF preceding css declarations at least one var( --content ) and 0-INF following declarations
 	 *
@@ -74,7 +69,10 @@ class TemplateStylesExtender {
 				Quantifier::optional( new Juxtaposition( [
 					$factory->comma(),
 					new WhitespaceMatcher( [ 'significant' => false ] ),
-					$anyProperty,
+					new Alternative( [
+						$anyProperty,
+						new FunctionMatcher( 'var', new CustomPropertyMatcher() )
+					] ),
 				] ) ),
 				new WhitespaceMatcher( [ 'significant' => false ] ),
 			] )

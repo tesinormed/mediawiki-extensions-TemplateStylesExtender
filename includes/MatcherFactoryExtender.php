@@ -10,7 +10,6 @@ use Wikimedia\CSS\Grammar\Alternative;
 use Wikimedia\CSS\Grammar\CustomPropertyMatcher;
 use Wikimedia\CSS\Grammar\FunctionMatcher;
 use Wikimedia\CSS\Grammar\Juxtaposition;
-use Wikimedia\CSS\Grammar\Matcher;
 use Wikimedia\CSS\Grammar\MatcherFactory;
 use Wikimedia\CSS\Grammar\Quantifier;
 use Wikimedia\CSS\Grammar\TokenMatcher;
@@ -25,7 +24,7 @@ class MatcherFactoryExtender extends MatcherFactory {
 	}
 
 	/** @inheritDoc */
-	protected function colorFuncs(): Matcher {
+	protected function colorFuncs(): array {
 		if ( !isset( $this->cache[__METHOD__] ) ) {
 			$var = new FunctionMatcher( 'var', new CustomPropertyMatcher() );
 			$i = new Alternative( [ $var, $this->integer() ] );
