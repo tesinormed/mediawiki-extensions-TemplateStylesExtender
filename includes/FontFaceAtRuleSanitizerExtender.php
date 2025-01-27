@@ -37,15 +37,12 @@ class FontFaceAtRuleSanitizerExtender extends FontFaceAtRuleSanitizer {
 			$matcherFactory->percentage()
 		] );
 
-		$this->propertySanitizer->setKnownProperties( array_merge(
-			$this->propertySanitizer->getKnownProperties(),
-			[
-				'ascent-override' => $matcher,
-				'descent-override' => $matcher,
-				'font-display' => new KeywordMatcher( [ 'auto', 'block', 'swap', 'fallback', 'optional' ] ),
-				'line-gap-override' => $matcher,
-				'size-adjust' => $matcher,
-			]
-		) );
+		$this->propertySanitizer->setKnownProperties( [
+			'ascent-override' => $matcher,
+			'descent-override' => $matcher,
+			'font-display' => new KeywordMatcher( [ 'auto', 'block', 'swap', 'fallback', 'optional' ] ),
+			'line-gap-override' => $matcher,
+			'size-adjust' => $matcher,
+		] + $this->propertySanitizer->getKnownProperties() );
 	}
 }
