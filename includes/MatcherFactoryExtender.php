@@ -24,7 +24,7 @@ class MatcherFactoryExtender extends MatcherFactory {
 	}
 
 	/** @inheritDoc */
-	protected function colorFuncs(): array {
+	protected function colorFuncs() {
 		if ( !isset( $this->cache[__METHOD__] ) ) {
 			$var = new FunctionMatcher( 'var', new CustomPropertyMatcher() );
 			$i = new Alternative( [ $var, $this->integer() ] );

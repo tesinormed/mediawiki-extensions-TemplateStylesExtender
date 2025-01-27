@@ -96,7 +96,7 @@ class StylePropertySanitizerExtender extends StylePropertySanitizer {
 	}
 
 	/** @inheritDoc */
-	protected function doSanitize( CSSObject $object ): CSSObject {
+	protected function doSanitize( CSSObject $object ) {
 		if ( !method_exists( $object, 'getName' ) || !str_starts_with( $object->getName(), '--' ) ) {
 			return parent::doSanitize( $object );
 		}

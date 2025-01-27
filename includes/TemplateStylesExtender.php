@@ -19,7 +19,6 @@
 
 namespace MediaWiki\Extension\TemplateStylesExtender;
 
-use Config;
 use InvalidArgumentException;
 use Wikimedia\CSS\Grammar\Alternative;
 use Wikimedia\CSS\Grammar\CustomPropertyMatcher;
@@ -168,7 +167,7 @@ class TemplateStylesExtender {
 	 * @param StylePropertySanitizer $propertySanitizer
 	 * @param MatcherFactory $factory
 	 */
-	public function addScrollMarginProperties( $propertySanitizer, $factory ): void {
+	public function addScrollMarginProperties( StylePropertySanitizer $propertySanitizer, MatcherFactory $factory ): void {
 		$suffixes = [
 			'margin-block-end',
 			'margin-block-start',
@@ -213,7 +212,7 @@ class TemplateStylesExtender {
 	 * @param StylePropertySanitizer $propertySanitizer
 	 * @param MatcherFactory $factory
 	 */
-	public function addInsetProperties( $propertySanitizer, $factory ): void {
+	public function addInsetProperties( StylePropertySanitizer $propertySanitizer, MatcherFactory $factory ): void {
 		$auto = new KeywordMatcher( 'auto' );
 		$autoLengthPct = new Alternative( [ $auto, $factory->lengthPercentage() ] );
 
