@@ -17,59 +17,39 @@
  * @file
  */
 
-declare( strict_types=1 );
-
 namespace MediaWiki\Extension\TemplateStylesExtender\Hooks;
 
-use MediaWiki\Extension\TemplateStyles\TemplateStylesMatcherFactory;
+use MediaWiki\Extension\TemplateStyles\Hooks\TemplateStylesStylesheetSanitizerHook;
 use MediaWiki\Extension\TemplateStylesExtender\FontFaceAtRuleSanitizerExtender;
-use MediaWiki\Extension\TemplateStylesExtender\MatcherFactoryExtender;
 use MediaWiki\Extension\TemplateStylesExtender\StylePropertySanitizerExtender;
 use MediaWiki\Extension\TemplateStylesExtender\TemplateStylesExtender;
-use Wikimedia\CSS\Sanitizer\MediaAtRuleSanitizer;
+use Wikimedia\CSS\Grammar\MatcherFactory;
 use Wikimedia\CSS\Sanitizer\StylePropertySanitizer;
 use Wikimedia\CSS\Sanitizer\StylesheetSanitizer;
 
-class StylesheetSanitizerHook {
-
+class StylesheetSanitizerHook implements TemplateStylesStylesheetSanitizerHook {
 	/**
-	 * This adds new matchers
-	 *
-	 * @param StylesheetSanitizer $sanitizer
-	 * @param StylePropertySanitizer $propertySanitizer
-	 * @param TemplateStylesMatcherFactory $matcherFactory
+	 * @inheritDoc
+	 * @see https://www.mediawiki.org/wiki/Extension:TemplateStyles/Hooks/TemplateStylesStylesheetSanitizer
 	 */
-	public static function onSanitize( $sanitizer, $propertySanitizer, $matcherFactory ): void {
+	public function onTemplateStylesStylesheetSanitizer(
+		StylesheetSanitizer &$sanitizer,
+		StylePropertySanitizer $propertySanitizer,
+		MatcherFactory $matcherFactory
+	): void {
 		$newRules = $sanitizer->getRuleSanitizers();
-
-		if ( TemplateStylesExtender::getConfigValue(
-			'TemplateStylesExtenderEnablePrefersColorScheme',
-				true ) === true ) {
-			$factory = new MatcherFactoryExtender();
-			$newRules['@media'] = new MediaAtRuleSanitizer( $factory->cssMediaQueryList() );
-			$newRules['@media']->setRuleSanitizers( $newRules );
-		}
-
 		$newRules['@font-face'] = new FontFaceAtRuleSanitizerExtender( $matcherFactory );
-
 		$sanitizer->setRuleSanitizers( $newRules );
 
 		$extended = new TemplateStylesExtender();
 
 		$extender = new StylePropertySanitizerExtender( $matcherFactory );
-
-		if ( TemplateStylesExtender::getConfigValue(
-				'TemplateStylesExtenderEnableCssVars',
-				true ) === true ) {
-			$extended->addVarSelector( $propertySanitizer, $matcherFactory );
-		}
-
+		$extended->addVarSelector( $propertySanitizer, $matcherFactory );
 		$extended->addImageRendering( $extender );
 		$extended->addRuby( $extender );
 		$extended->addPointerEvents( $extender );
 		$extended->addScrollMarginProperties( $extender, $matcherFactory );
 		$extended->addAspectRatio( $extender, $matcherFactory );
-		$extended->addInlineBlockMarginPaddingProperties( $extender, $matcherFactory );
 		$extended->addInsetProperties( $extender, $matcherFactory );
 		$extended->addBackdropFilter( $extender );
 

@@ -17,16 +17,12 @@
  * @file
  */
 
-declare( strict_types=1 );
-
 namespace MediaWiki\Extension\TemplateStylesExtender;
 
 use Config;
-use ConfigException;
 use InvalidArgumentException;
-use MediaWiki\Extension\TemplateStylesExtender\Matcher\VarNameMatcher;
-use MediaWiki\MediaWikiServices;
 use Wikimedia\CSS\Grammar\Alternative;
+use Wikimedia\CSS\Grammar\CustomPropertyMatcher;
 use Wikimedia\CSS\Grammar\DelimMatcher;
 use Wikimedia\CSS\Grammar\FunctionMatcher;
 use Wikimedia\CSS\Grammar\Juxtaposition;
@@ -37,7 +33,6 @@ use Wikimedia\CSS\Grammar\WhitespaceMatcher;
 use Wikimedia\CSS\Sanitizer\StylePropertySanitizer;
 
 class TemplateStylesExtender {
-
 	/**
 	 * @var Config
 	 */
@@ -74,7 +69,7 @@ class TemplateStylesExtender {
 			'var',
 			new Juxtaposition( [
 				new WhitespaceMatcher( [ 'significant' => false ] ),
-				new VarNameMatcher(),
+				new CustomPropertyMatcher(),
 				new WhitespaceMatcher( [ 'significant' => false ] ),
 				Quantifier::optional( new Juxtaposition( [
 					$factory->comma(),
@@ -133,8 +128,8 @@ class TemplateStylesExtender {
 					'pixelated',
 				] )
 			] );
-		} catch ( InvalidArgumentException $e ) {
-			// Fail silently
+		} catch ( InvalidArgumentException ) {
+			// fail silently
 		}
 	}
 
@@ -162,8 +157,8 @@ class TemplateStylesExtender {
 					'inter-character',
 				] )
 			] );
-		} catch ( InvalidArgumentException $e ) {
-			// Fail silently
+		} catch ( InvalidArgumentException ) {
+			// fail silently
 		}
 	}
 
@@ -208,41 +203,9 @@ class TemplateStylesExtender {
 						$factory->length()
 					] )
 				] );
-			} catch ( InvalidArgumentException $e ) {
-				// Fail silently
+			} catch ( InvalidArgumentException ) {
+				// fail silently
 			}
-		}
-	}
-
-	/**
-	 * Adds padding|margin-inline|block support
-	 *
-	 * @param StylePropertySanitizer $propertySanitizer
-	 * @param MatcherFactory $factory
-	 */
-	public function addInlineBlockMarginPaddingProperties( $propertySanitizer, $factory ): void {
-		$auto = new KeywordMatcher( 'auto' );
-		$autoLengthPct = new Alternative( [ $auto, $factory->lengthPercentage() ] );
-
-		$props = [];
-
-		$props['margin-block-end'] = $autoLengthPct;
-		$props['margin-block-start'] = $autoLengthPct;
-		$props['margin-block'] = Quantifier::count( $autoLengthPct, 1, 2 );
-		$props['margin-inline-end'] = $autoLengthPct;
-		$props['margin-inline-start'] = $autoLengthPct;
-		$props['margin-inline'] = Quantifier::count( $autoLengthPct, 1, 2 );
-		$props['padding-block-end'] = $autoLengthPct;
-		$props['padding-block-start'] = $autoLengthPct;
-		$props['padding-block'] = Quantifier::count( $autoLengthPct, 1, 2 );
-		$props['padding-inline-end'] = $autoLengthPct;
-		$props['padding-inline-start'] = $autoLengthPct;
-		$props['padding-inline'] = Quantifier::count( $autoLengthPct, 1, 2 );
-
-		try {
-			$propertySanitizer->addKnownProperties( $props );
-		} catch ( InvalidArgumentException $e ) {
-			// Fail silently
 		}
 	}
 
@@ -270,8 +233,8 @@ class TemplateStylesExtender {
 
 		try {
 			$propertySanitizer->addKnownProperties( $props );
-		} catch ( InvalidArgumentException $e ) {
-			// Fail silently
+		} catch ( InvalidArgumentException ) {
+			// fail silently
 		}
 	}
 
@@ -296,8 +259,8 @@ class TemplateStylesExtender {
 					'all',
 				] )
 			] );
-		} catch ( InvalidArgumentException $e ) {
-			// Fail silently
+		} catch ( InvalidArgumentException ) {
+			// fail silently
 		}
 	}
 
@@ -325,8 +288,8 @@ class TemplateStylesExtender {
 					] ),
 				] )
 			] );
-		} catch ( InvalidArgumentException $e ) {
-			// Fail silently
+		} catch ( InvalidArgumentException ) {
+			// fail silently
 		}
 	}
 
@@ -342,39 +305,8 @@ class TemplateStylesExtender {
 			$propertySanitizer->addKnownProperties( [
 				'backdrop-filter' => Quantifier::plus( $filter ),
 			] );
-		} catch ( InvalidArgumentException $e ) {
-			// Fail silently
+		} catch ( InvalidArgumentException ) {
+			// fail silently
 		}
-	}
-
-	/**
-	 * Loads a config value for a given key from the main config
-	 * Returns null on if an ConfigException was thrown
-	 *
-	 * @param string $key The config key
-	 * @param null $default
-	 * @return mixed|null
-	 */
-	public static function getConfigValue( string $key, $default = null ) {
-		if ( self::$config === null ) {
-			self::$config = MediaWikiServices::getInstance()
-				->getConfigFactory()
-				->makeConfig( 'TemplateStylesExtender' );
-		}
-
-		try {
-			$value = self::$config->get( $key );
-		} catch ( ConfigException $e ) {
-			wfLogWarning(
-				sprintf(
-					'Could not get config for "$wg%s". %s', $key,
-					$e->getMessage()
-				)
-			);
-
-			return $default;
-		}
-
-		return $value;
 	}
 }

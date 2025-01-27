@@ -16,7 +16,6 @@
  *
  * @file
  */
-declare( strict_types=1 );
 
 namespace MediaWiki\Extension\TemplateStylesExtender;
 
@@ -33,15 +32,20 @@ class FontFaceAtRuleSanitizerExtender extends FontFaceAtRuleSanitizer {
 	public function __construct( MatcherFactory $matcherFactory ) {
 		parent::__construct( $matcherFactory );
 
-		$matcher = new Alternative( [ new KeywordMatcher( 'normal' ), $matcherFactory->percentage() ] );
+		$matcher = new Alternative( [
+			new KeywordMatcher( 'normal' ),
+			$matcherFactory->percentage()
+		] );
 
-		// Only allow the font-family if it begins with "TemplateStyles"
-		$this->propertySanitizer->setKnownProperties( [
-			'ascent-override' => $matcher,
-			'descent-override' => $matcher,
-			'font-display' => new KeywordMatcher( [ 'auto', 'block', 'swap', 'fallback', 'optional' ] ),
-			'line-gap-override' => $matcher,
-			'size-adjust' => $matcher,
-		] + $this->propertySanitizer->getKnownProperties() );
+		$this->propertySanitizer->setKnownProperties( array_merge(
+			$this->propertySanitizer->getKnownProperties(),
+			[
+				'ascent-override' => $matcher,
+				'descent-override' => $matcher,
+				'font-display' => new KeywordMatcher( [ 'auto', 'block', 'swap', 'fallback', 'optional' ] ),
+				'line-gap-override' => $matcher,
+				'size-adjust' => $matcher,
+			]
+		) );
 	}
 }
