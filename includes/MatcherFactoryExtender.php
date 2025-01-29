@@ -19,7 +19,7 @@ class MatcherFactoryExtender extends MatcherFactory {
 	/** @inheritDoc */
 	public function colorHex(): TokenMatcher {
 		return new TokenMatcher( Token::T_HASH, static function ( Token $t ) {
-			return preg_match( '/^([0-9a-f]{3,6,4,8})$/i', $t->value() );
+			return preg_match( '/^([0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})$/i', $t->value() );
 		} );
 	}
 
