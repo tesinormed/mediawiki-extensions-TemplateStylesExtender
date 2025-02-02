@@ -16,6 +16,8 @@ use Wikimedia\CSS\Grammar\TokenMatcher;
 use Wikimedia\CSS\Objects\Token;
 
 class MatcherFactoryExtender extends MatcherFactory {
+	private static $extendedImage = false;
+
 	/** @inheritDoc */
 	public function colorHex(): TokenMatcher {
 		return new TokenMatcher( Token::T_HASH, static function ( Token $t ) {
@@ -53,5 +55,35 @@ class MatcherFactoryExtender extends MatcherFactory {
 			];
 		}
 		return $this->cache[__METHOD__];
+	}
+
+	/** @inheritDoc */
+	public function resolution() {
+		if ( !isset( $this->cache[__METHOD__] ) ) {
+			$this->cache[__METHOD__] = new TokenMatcher( Token::T_DIMENSION, static function ( Token $t ) {
+				return preg_match( '/^(dpi|dpcm|dppx|x)$/i', $t->unit() );
+			} );
+		}
+		return $this->cache[__METHOD__];
+	}
+
+	/** @inheritDoc */
+	public function image() {
+		if ( self::$extendedImage && isset( $this->cache[__METHOD__] ) ) {
+			return $this->cache[__METHOD__];
+		}
+
+		$props = parent::image();
+		$props = new Alternative( [
+			$props,
+			new FunctionMatcher( 'image-set', Quantifier::hash( new Juxtaposition( [
+				new Alternative( [ $this->url( 'image' ), $this->urlstring( 'image' ) ] ),
+				new Alternative( [ $this->resolution(), new FunctionMatcher( 'type', $this->string() ) ] )
+			] ) ) )
+		] );
+
+		$this->cache[__METHOD__] = $props;
+		self::$extendedImage = true;
+		return $props;
 	}
 }
