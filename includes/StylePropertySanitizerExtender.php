@@ -36,6 +36,16 @@ class StylePropertySanitizerExtender extends StylePropertySanitizer {
 
 		$props = parent::cssBorderBackground3( $matcherFactory );
 
+		$boxKeywords = new KeywordMatcher( $this->backgroundTypes( $matcherFactory )['boxKeywords'] );
+		$props['background-origin'] = $boxKeywords;
+		$props['background-clip'] = new Alternative( [
+			$boxKeywords,
+			new KeywordMatcher( [
+				'text',
+				'border-area',
+			] )
+		] );
+
 		$props['border'] = UnorderedGroup::someOf( [
 			new KeywordMatcher( [
 				'none', 'hidden', 'dotted', 'dashed', 'solid', 'double', 'groove', 'ridge', 'inset', 'outset'

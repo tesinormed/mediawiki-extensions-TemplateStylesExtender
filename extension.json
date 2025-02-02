@@ -1,6 +1,6 @@
 {
 	"name": "TemplateStylesExtender",
-	"version": "1.5.2",
+	"version": "1.5.0",
 	"author": [
 		"[https://www.mediawiki.org/wiki/User:Octfx Octfx]"
 	],
@@ -9,34 +9,13 @@
 	"license-name": "GPL-2.0-or-later",
 	"type": "parserhook",
 	"requires": {
-		"MediaWiki": ">= 1.39.0",
+		"MediaWiki": ">= 1.43.0",
 		"platform": {
-			"php": ">=8.0"
+			"php": ">= 8.1"
 		},
 		"extensions": {
-			"TemplateStyles": ">= 1.0"
+			"TemplateStyles": "*"
 		}
-	},
-	"config": {
-		"TemplateStylesExtenderEnablePrefersColorScheme": {
-			"description": "Enable the prefers-color-scheme media query. WARNING this can break things if TemplateStyles was updated upstream",
-			"value": true
-		},
-		"TemplateStylesExtenderEnableCssVars": {
-			"description": "Enable the matcher for css variables",
-			"value": true
-		},
-		"TemplateStylesExtenderEnableUnscopingSupport": {
-			"description": "Allow to unscope css by changing '.mw-parser-output' to a custom class",
-			"value": false
-		},
-		"TemplateStylesExtenderUnscopingPermission": {
-			"description": "Speficy the permission a user must have to use unscoping. Defaults to 'editinterface'.",
-			"value": "editinterface"
-		}
-	},
-	"ConfigRegistry": {
-		"TemplateStylesExtender": "GlobalVarConfig::newInstance"
 	},
 	"MessagesDirs": {
 		"TemplateStylesExtender": [
