@@ -52,6 +52,7 @@ class StylesheetSanitizerHook implements TemplateStylesStylesheetSanitizerHook {
 		$extended->addAspectRatio( $extender, $matcherFactory );
 		$extended->addInsetProperties( $extender, $matcherFactory );
 		$extended->addBackdropFilter( $extender );
+		$extended->addContentVisibility( $extender );
 
 		$propertySanitizer->setKnownProperties( $extender->getKnownProperties() );
 	}
