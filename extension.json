@@ -1,8 +1,9 @@
 {
 	"name": "TemplateStylesExtender",
-	"version": "1.7.0",
+	"version": "1.8.0",
 	"author": [
-		"[https://www.mediawiki.org/wiki/User:Octfx Octfx]"
+		"[https://www.mediawiki.org/wiki/User:Octfx Octfx]",
+		"tesinormed"
 	],
 	"url": "https://github.com/octfx/mediawiki-extensions-TemplateStylesExtender",
 	"descriptionmsg": "ext-templatestylesextender-desc",

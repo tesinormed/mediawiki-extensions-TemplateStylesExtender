@@ -48,11 +48,12 @@ class StylesheetSanitizerHook implements TemplateStylesStylesheetSanitizerHook {
 		$extended->addImageRendering( $extender );
 		$extended->addRuby( $extender );
 		$extended->addPointerEvents( $extender );
-		$extended->addScrollMarginProperties( $extender, $matcherFactory );
+		$extended->addScrollSpace( $extender, $matcherFactory );
 		$extended->addAspectRatio( $extender, $matcherFactory );
 		$extended->addInsetProperties( $extender, $matcherFactory );
 		$extended->addBackdropFilter( $extender );
 		$extended->addContentVisibility( $extender );
+		$extended->cssText4( $extender );
 
 		$propertySanitizer->setKnownProperties( $extender->getKnownProperties() );
 	}

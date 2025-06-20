@@ -167,7 +167,7 @@ class TemplateStylesExtender {
 	 * @param StylePropertySanitizer $propertySanitizer
 	 * @param MatcherFactory $factory
 	 */
-	public function addScrollMarginProperties( StylePropertySanitizer $propertySanitizer, MatcherFactory $factory ): void {
+	public function addScrollSpace( StylePropertySanitizer $propertySanitizer, MatcherFactory $factory ): void {
 		$suffixes = [
 			'margin-block-end',
 			'margin-block-start',
@@ -321,6 +321,29 @@ class TemplateStylesExtender {
 					'hidden'
 				] )
 			] );
+		} catch ( InvalidArgumentException ) {
+			// fail silently
+		}
+	}
+
+	/**
+	 * Adds the CSS Text Module Level 4 matcher
+	 *
+	 * @param StylePropertySanitizer $propertySanitizer
+	 */
+	public function cssText4( StylePropertySanitizer $propertySanitizer ): void {
+		$props = [];
+
+		$props['text-wrap'] = new KeywordMatcher( [
+			'wrap',
+			'nowrap',
+			'balance',
+			'pretty',
+			'stable'
+		] );
+
+		try {
+			$propertySanitizer->addKnownProperties( $props );
 		} catch ( InvalidArgumentException ) {
 			// fail silently
 		}
