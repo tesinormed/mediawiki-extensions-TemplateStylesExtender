@@ -9,6 +9,7 @@ namespace MediaWiki\Extension\TemplateStylesExtender;
 use Wikimedia\CSS\Grammar\Alternative;
 use Wikimedia\CSS\Grammar\CustomPropertyMatcher;
 use Wikimedia\CSS\Grammar\FunctionMatcher;
+use Wikimedia\CSS\Grammar\Juxtaposition;
 use Wikimedia\CSS\Grammar\KeywordMatcher;
 use Wikimedia\CSS\Grammar\MatcherFactory;
 use Wikimedia\CSS\Grammar\Quantifier;
@@ -19,6 +20,7 @@ use Wikimedia\CSS\Sanitizer\StylePropertySanitizer;
 class StylePropertySanitizerExtender extends StylePropertySanitizer {
 	private static $extendedCssBorderBackground = false;
 	private static $extendedCssSizingAdditions = false;
+	private static $extendedCssTransforms = false;
 
 	/** @inheritDoc */
 	public function __construct( MatcherFactory $matcherFactory ) {
@@ -104,6 +106,59 @@ class StylePropertySanitizerExtender extends StylePropertySanitizer {
 		);
 		self::$extendedCssSizingAdditions = true;
 		return $this->cache[__METHOD__];
+	}
+
+	protected function cssTransforms1( MatcherFactory $matcherFactory ) {
+		if ( self::$extendedCssTransforms && isset( $this->cache[__METHOD__] ) ) {
+			return $this->cache[__METHOD__];
+		}
+
+		$props = parent::cssTransforms1( $matcherFactory );
+
+		$a = $matcherFactory->angle();
+		$az = new Alternative( [
+			$matcherFactory->zero(),
+			$a,
+		] );
+		$n = $matcherFactory->number();
+		$l = $matcherFactory->length();
+		$lp = $matcherFactory->lengthPercentage();
+
+		$props['transform'] = new Alternative( [
+			new KeywordMatcher( 'none' ),
+			Quantifier::plus( new Alternative( [
+				new FunctionMatcher( 'matrix', Quantifier::hash( $n, 6, 6 ) ),
+				new FunctionMatcher( 'matrix3d', Quantifier::hash( $n, 16, 16 ) ),
+				new FunctionMatcher( 'perspective', $l ),
+				new FunctionMatcher( 'rotate', $az ),
+				new FunctionMatcher( 'rotate3d', new Juxtaposition( [ $n, $n, $n, $az ], commas: true ) ),
+				new FunctionMatcher( 'rotateX', $az ),
+				new FunctionMatcher( 'rotateY', $az ),
+				new FunctionMatcher( 'rotateZ', $az ),
+				new FunctionMatcher( 'scale', Quantifier::hash( $n, 1, 2 ) ),
+				new FunctionMatcher( 'scale3d', Quantifier::hash( $n, 3, 3 ) ),
+				new FunctionMatcher( 'scaleX', $n ),
+				new FunctionMatcher( 'scaleY', $n ),
+				new FunctionMatcher( 'scaleZ', $n ),
+				new FunctionMatcher( 'skew', Quantifier::hash( $az, 1, 2 ) ),
+				new FunctionMatcher( 'skewX', $az ),
+				new FunctionMatcher( 'skewY', $az ),
+				new FunctionMatcher( 'translate', Quantifier::hash( $lp, 1, 2 ) ),
+				new FunctionMatcher( 'translate3d', new Juxtaposition( [ $lp, $lp, $l ], commas: true ) ),
+				new FunctionMatcher( 'translateX', $lp ),
+				new FunctionMatcher( 'translateY', $lp ),
+				new FunctionMatcher( 'translateZ', $lp ),
+			] ) )
+		] );
+		$props['transform-style'] = new KeywordMatcher( [
+			'flat',
+			'preserve-3d'
+		] );
+
+		$this->cache[__METHOD__] = $props;
+		self::$extendedCssTransforms = true;
+
+		return $props;
 	}
 
 	/** @inheritDoc */
