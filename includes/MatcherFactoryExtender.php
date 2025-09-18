@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * @license https://opensource.org/licenses/Apache-2.0 Apache-2.0
- */
 
 namespace MediaWiki\Extension\TemplateStylesExtender;
 

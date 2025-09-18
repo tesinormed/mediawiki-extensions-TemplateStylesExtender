@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * @license https://opensource.org/licenses/Apache-2.0 Apache-2.0
- */
 
 namespace MediaWiki\Extension\TemplateStylesExtender;
 
@@ -21,6 +17,7 @@ class StylePropertySanitizerExtender extends StylePropertySanitizer {
 	private static $extendedCssBorderBackground = false;
 	private static $extendedCssSizingAdditions = false;
 	private static $extendedCssTransforms = false;
+	private static $extendedCssTransitions = false;
 
 	/** @inheritDoc */
 	public function __construct( MatcherFactory $matcherFactory ) {
@@ -104,10 +101,16 @@ class StylePropertySanitizerExtender extends StylePropertySanitizer {
 				] ), 3, 3 ) )
 			]
 		);
+
 		self::$extendedCssSizingAdditions = true;
 		return $this->cache[__METHOD__];
 	}
 
+	/**
+	 * @inheritDoc
+	 * @see https://developer.mozilla.org/en-US/docs/Web/CSS/transform
+	 * @see https://developer.mozilla.org/en-US/docs/Web/CSS/transform-style
+	 */
 	protected function cssTransforms1( MatcherFactory $matcherFactory ) {
 		if ( self::$extendedCssTransforms && isset( $this->cache[__METHOD__] ) ) {
 			return $this->cache[__METHOD__];
@@ -157,6 +160,28 @@ class StylePropertySanitizerExtender extends StylePropertySanitizer {
 
 		$this->cache[__METHOD__] = $props;
 		self::$extendedCssTransforms = true;
+
+		return $props;
+	}
+
+	/**
+	 * @inheritDoc
+	 * @see https://developer.mozilla.org/en-US/docs/Web/CSS/transition-behavior
+	 */
+	protected function cssTransitions( MatcherFactory $matcherFactory ) {
+		if ( self::$extendedCssTransitions && isset( $this->cache[__METHOD__] ) ) {
+			return $this->cache[__METHOD__];
+		}
+
+		$props = parent::cssTransitions( $matcherFactory );
+
+		$props['transition-behavior'] = new KeywordMatcher( [
+			'normal',
+			'allow-discrete'
+		] );
+
+		$this->cache[__METHOD__] = $props;
+		self::$extendedCssTransitions = true;
 
 		return $props;
 	}

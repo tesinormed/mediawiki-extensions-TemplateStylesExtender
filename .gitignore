@@ -1,6 +1,6 @@
 # Composer
 /composer.lock
-/vendor
+/vendor/
 
 # JetBrains IDEs
-/.idea
+/.idea/

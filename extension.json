@@ -1,6 +1,6 @@
 {
 	"name": "TemplateStylesExtender",
-	"version": "1.9.0",
+	"version": "1.10.0",
 	"author": [
 		"[https://www.mediawiki.org/wiki/User:Octfx Octfx]",
 		"tesinormed"
@@ -10,18 +10,13 @@
 	"license-name": "GPL-2.0-or-later",
 	"type": "parserhook",
 	"requires": {
-		"MediaWiki": ">= 1.43.0",
+		"MediaWiki": ">= 1.43",
 		"platform": {
 			"php": ">= 8.1"
 		},
 		"extensions": {
 			"TemplateStyles": "*"
 		}
-	},
-	"MessagesDirs": {
-		"TemplateStylesExtender": [
-			"i18n"
-		]
 	},
 	"AutoloadNamespaces": {
 		"MediaWiki\\Extension\\TemplateStylesExtender\\": "includes/"
@@ -37,6 +32,11 @@
 	"Hooks": {
 		"TemplateStylesPropertySanitizer": "PropertySanitizerHook",
 		"TemplateStylesStylesheetSanitizer": "StylesheetSanitizerHook"
+	},
+	"MessagesDirs": {
+		"TemplateStylesExtender": [
+			"i18n"
+		]
 	},
 	"manifest_version": 2
 }
